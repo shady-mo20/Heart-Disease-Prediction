@@ -35,6 +35,42 @@ The application leverages the XGBoost algorithm, a powerful and efficient implem
 ## Installation
 
 1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-username/Heart-Disease-Prediction.git
-   cd Heart-Disease-Prediction
+    ```bash
+    git clone https://github.com/your-username/Heart-Disease-Prediction.git
+    cd Heart-Disease-Prediction
+    ```
+
+2. **Create a Virtual Environment (Optional but Recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3. **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the Application:**
+    ```bash
+    streamlit run app.py
+    ```
+
+## Usage
+
+1. Open the application in your web browser.
+2. Navigate to the "Predict Heart Disease" section.
+3. Input your health metrics in the provided fields.
+4. Click on the "Predict" button to receive your prediction and probability score.
+5. Navigate to the "About" section to learn more about the application.
+
+## Disclaimer
+
+**⚠️ This application is intended for educational purposes only and should not be used as a substitute for professional medical advice. Always consult your healthcare provider for any medical concerns.**
+
+## Future Enhancements
+
+- **Integration with Wearable Devices:** Allow users to import data directly from health trackers.
+- **Personalized Health Tips:** Provide tailored recommendations based on prediction results.
+- **Historical Data Analysis:** Enable users to track their health metrics over time.
+- **Multi-language Support:** Expand the application's accessibility to a broader audience by supporting multiple languages.
