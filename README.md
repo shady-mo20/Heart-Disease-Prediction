@@ -92,6 +92,3 @@ The result displays the prediction (whether heart disease is detected) with a pr
 
 ⚠️ **This application is for educational purposes only and is not a substitute for professional medical advice.** Always consult a healthcare provider for any medical concerns. The predictions are based on a trained machine learning model and may not be 100% accurate.
 
----
-
-This README file provides clear, structured information about the project, including setup, usage instructions, and visual examples of the interface and results. Adjust the file paths for images to match your project structure after uploading them to GitHub. Let me know if there’s anything else you’d like to add or modify!
