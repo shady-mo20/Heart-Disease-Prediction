@@ -4,14 +4,12 @@ import joblib
 import streamlit as st
 from PIL import Image
 
-# Page Configuration
 st.set_page_config(
     page_title="Heart Disease Prediction",
     layout="wide",
     page_icon="❤️"
 )
 
-# Define resource directories
 MODELS_DIR = 'models'
 ENCODERS_DIR = 'encoders'
 IMAGES_DIR = 'images'
@@ -28,7 +26,6 @@ def load_resources():
     scaler = joblib.load(scaler_path)
     feature_order = joblib.load(feature_order_path)
     
-    # Load encoders for each categorical feature
     encoders = {}
     for filename in os.listdir(ENCODERS_DIR):
         if filename.endswith('_encoder.joblib'):
@@ -37,11 +34,9 @@ def load_resources():
             encoders[feature_name] = joblib.load(encoder_path)
     return model, scaler, feature_order, encoders
 
-# Load resources
 model, scaler, feature_order, encoders = load_resources()
 st.sidebar.success("All resources loaded successfully.")
 
-# Display categorical feature categories in the sidebar
 for feature, encoder in encoders.items():
     st.sidebar.write(f"**{feature}** Categories: {list(encoder.categories_[0])}")
 
@@ -76,11 +71,9 @@ def predict_heart_disease(input_data):
     prediction_proba = model.predict_proba(input_data)[0][1]
     return prediction, prediction_proba
 
-# Navigation options in the sidebar
 options = st.sidebar.radio("Navigation", ["Predict Heart Disease", "About"])
 
 if options == "Predict Heart Disease":
-    # Display header image if available
     header_image_path = os.path.join(IMAGES_DIR, "Heart-Disease.jpg")
     if os.path.exists(header_image_path):
         st.image(Image.open(header_image_path), use_column_width=True)
@@ -205,14 +198,11 @@ if options == "Predict Heart Disease":
         st.write("### Your Input:")
         st.dataframe(input_data)
     
-        # Encode and preprocess the input data
         input_data_encoded = encode_input(input_data, encoders)
         input_data_preprocessed = preprocess_input(input_data_encoded, scaler, feature_order)
     
-        # Make prediction
         prediction, prediction_proba = predict_heart_disease(input_data_preprocessed)
     
-        # Display results with probability
         if prediction == 1:
             st.error(f"### 🛑 Heart Disease Detected (Probability: {prediction_proba:.2f})")
             detected_image_path = os.path.join(IMAGES_DIR, "heart_disease_detected.jpg")
@@ -224,7 +214,6 @@ if options == "Predict Heart Disease":
             if os.path.exists(no_disease_image_path):
                 st.image(Image.open(no_disease_image_path), use_column_width=True)
         
-        # Interpretation of Results
         st.markdown("""
         ---
         ### 📋 Interpretation of Results:
