@@ -1,7 +1,3 @@
-Here's a **README.md** file for your project, including descriptions and instructions. The screenshots you've provided are embedded to illustrate the application interface and results.
-
----
-
 # ❤️ Heart Disease Prediction
 
 This **Heart Disease Prediction** application uses machine learning to assess the risk of heart disease based on various health indicators. Built with **Streamlit** and powered by an **XGBoost** classifier, it provides users with a quick and interactive way to evaluate their heart disease risk by inputting essential health metrics.
@@ -73,17 +69,17 @@ To run the application locally, follow these steps:
 ### 1. Main Interface
 Upon launching, the sidebar displays loaded resources and categorical feature details, while the main section provides a form to input health metrics.
 
-![Main Interface](./path/to/Screenshot1.png)
+![Main Interface](images/Screenshot1.png)
 
 ### 2. User Input Preview
 After entering data, a preview of your input is shown to confirm the details before making a prediction.
 
-![User Input Preview](./path/to/Screenshot2.png)
+![User Input Preview](images/Screenshot2.png)
 
 ### 3. Prediction Results
 The result displays the prediction (whether heart disease is detected) with a probability score. It also provides an interpretation of the results.
 
-![Prediction Results](./path/to/Screenshot3.png)
+![Prediction Results](images/Screenshot3.png)
 
 ## Future Enhancements
 
