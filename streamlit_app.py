@@ -1,4 +1,5 @@
 import os
+import time
 import pandas as pd
 import joblib
 import streamlit as st
@@ -14,17 +15,24 @@ MODELS_DIR = 'models'
 ENCODERS_DIR = 'encoders'
 IMAGES_DIR = 'images'
 
-@st.cache_resource(show_spinner=True)
+@st.cache_resource(show_spinner=False)
 def load_resources():
-    """
-    Load the machine learning model, scaler, feature order, and encoders from saved files.
-    """
+    progress_bar = st.progress(0)
     model_path = os.path.join(MODELS_DIR, 'best_xgb_model.pkl')
     scaler_path = os.path.join(MODELS_DIR, 'scaler.pkl')
     feature_order_path = os.path.join(MODELS_DIR, 'feature_order.pkl')
+    
     model = joblib.load(model_path)
+    progress_bar.progress(33)
+    time.sleep(0.5)
+    
     scaler = joblib.load(scaler_path)
+    progress_bar.progress(66)
+    time.sleep(0.5)
+    
     feature_order = joblib.load(feature_order_path)
+    progress_bar.progress(100)
+    time.sleep(0.5)
     
     encoders = {}
     for filename in os.listdir(ENCODERS_DIR):
@@ -32,6 +40,7 @@ def load_resources():
             feature_name = filename.replace('_encoder.joblib', '')
             encoder_path = os.path.join(ENCODERS_DIR, filename)
             encoders[feature_name] = joblib.load(encoder_path)
+    
     return model, scaler, feature_order, encoders
 
 model, scaler, feature_order, encoders = load_resources()
@@ -41,9 +50,6 @@ for feature, encoder in encoders.items():
     st.sidebar.write(f"**{feature}** Categories: {list(encoder.categories_[0])}")
 
 def encode_input(input_data, encoders):
-    """
-    Encode categorical input data using the loaded encoders.
-    """
     categorical_features = ['Chest pain type', 'EKG results', 'Slope of ST', 'Thallium']
     for feature in categorical_features:
         if feature in encoders:
@@ -55,18 +61,12 @@ def encode_input(input_data, encoders):
     return input_data
 
 def preprocess_input(input_data, scaler, feature_order):
-    """
-    Preprocess the input data by scaling numerical features and ordering columns.
-    """
     numerical_features = ['Age', 'BP', 'Cholesterol', 'Max HR', 'ST depression']
     input_data[numerical_features] = scaler.transform(input_data[numerical_features])
     input_data = input_data.reindex(columns=feature_order, fill_value=0)
     return input_data
 
 def predict_heart_disease(input_data):
-    """
-    Make a prediction using the loaded model and return the result and probability.
-    """
     prediction = model.predict(input_data)[0]
     prediction_proba = model.predict_proba(input_data)[0][1]
     return prediction, prediction_proba
@@ -79,8 +79,8 @@ if options == "Predict Heart Disease":
         st.image(Image.open(header_image_path), use_column_width=True)
     
     st.title("❤️ Heart Disease Prediction")
-    st.write("### Assess your risk of heart disease by providing the following health metrics.")
-    
+    st.write("### Get an instant assessment of your heart health by providing the following details.")
+
     with st.form("prediction_form"):
         col1, col2 = st.columns(2)
         with col1:
@@ -179,49 +179,51 @@ if options == "Predict Heart Disease":
         submit_button = st.form_submit_button(label="Predict")
     
     if submit_button:
-        input_data = pd.DataFrame({
-            'Age': [age],
-            'BP': [bp],
-            'Cholesterol': [chol],
-            'Max HR': [max_hr],
-            'ST depression': [st_depression],
-            'Sex': [sex],
-            'Chest pain type': [cp],
-            'FBS over 120': [fbs],
-            'EKG results': [ekg],
-            'Exercise angina': [exang],
-            'Slope of ST': [slope_encoded],
-            'Number of vessels fluro': [num_vessels],
-            'Thallium': [thallium_encoded]
-        })
-    
-        st.write("### Your Input:")
-        st.dataframe(input_data)
-    
-        input_data_encoded = encode_input(input_data, encoders)
-        input_data_preprocessed = preprocess_input(input_data_encoded, scaler, feature_order)
-    
-        prediction, prediction_proba = predict_heart_disease(input_data_preprocessed)
-    
-        if prediction == 1:
-            st.error(f"### 🛑 Heart Disease Detected (Probability: {prediction_proba:.2f})")
-            detected_image_path = os.path.join(IMAGES_DIR, "heart_disease_detected.jpg")
-            if os.path.exists(detected_image_path):
-                st.image(Image.open(detected_image_path), use_column_width=True)
-        else:
-            st.success(f"### 🎉 No Heart Disease Detected (Probability: {1 - prediction_proba:.2f})")
-            no_disease_image_path = os.path.join(IMAGES_DIR, "no_heart_disease.jpg")
-            if os.path.exists(no_disease_image_path):
-                st.image(Image.open(no_disease_image_path), use_column_width=True)
+        with st.spinner('Processing your data...'):
+            input_data = pd.DataFrame({
+                'Age': [age],
+                'BP': [bp],
+                'Cholesterol': [chol],
+                'Max HR': [max_hr],
+                'ST depression': [st_depression],
+                'Sex': [sex],
+                'Chest pain type': [cp],
+                'FBS over 120': [fbs],
+                'EKG results': [ekg],
+                'Exercise angina': [exang],
+                'Slope of ST': [slope_encoded],
+                'Number of vessels fluro': [num_vessels],
+                'Thallium': [thallium_encoded]
+            })
+
+            st.write("### Your Input:")
+            st.dataframe(input_data)
+
+            input_data_encoded = encode_input(input_data, encoders)
+            input_data_preprocessed = preprocess_input(input_data_encoded, scaler, feature_order)
+
+            prediction, prediction_proba = predict_heart_disease(input_data_preprocessed)
+
+            if prediction == 1:
+                st.error(f"### 🛑 Heart Disease Detected (Probability: {prediction_proba:.2f})")
+                detected_image_path = os.path.join(IMAGES_DIR, "heart_disease_detected.jpg")
+                if os.path.exists(detected_image_path):
+                    st.image(Image.open(detected_image_path), use_column_width=True)
+            else:
+                st.success(f"### 🎉 No Heart Disease Detected (Probability: {1 - prediction_proba:.2f})")
+                st.balloons()
+                no_disease_image_path = os.path.join(IMAGES_DIR, "no_heart_disease.jpg")
+                if os.path.exists(no_disease_image_path):
+                    st.image(Image.open(no_disease_image_path), use_column_width=True)
         
-        st.markdown("""
-        ---
-        ### 📋 Interpretation of Results:
-        - **Heart Disease Detected:** Based on your inputs, the results indicate potential risks for heart disease.
-        - **No Heart Disease Detected:** Your inputs suggest that the risk of heart disease is low.
-        
-        **Note:** These predictions are based on a trained model and do not replace professional medical advice.
-        """)
+            st.markdown("""
+            ---
+            ### 📋 Interpretation of Results:
+            - **Heart Disease Detected:** Based on your inputs, the results indicate potential risks for heart disease.
+            - **No Heart Disease Detected:** Your inputs suggest that the risk of heart disease is low.
+    
+            **Note:** These predictions are based on a trained model and do not replace professional medical advice.
+            """)
 
 elif options == "About":
     st.header("🔍 About This Application")
@@ -255,7 +257,7 @@ elif options == "About":
     - **Model Training:** Utilized advanced machine learning techniques to develop a robust prediction model.
     - **Deployment:** Integrated the model into a Streamlit application for user accessibility.
     """)
-    
+
     about_app_image_path = os.path.join(IMAGES_DIR, "about_heart_disease.jpg")
     if os.path.exists(about_app_image_path):
         st.image(Image.open(about_app_image_path), use_column_width=True)
@@ -274,7 +276,6 @@ elif options == "About":
     """)
 
     # Optional: Model Performance Metrics
-    # Uncomment the following lines to display model performance metrics
     # st.write("""
     # ### 📈 Model Performance:
     # - **Accuracy:** 85%
