@@ -100,7 +100,7 @@ To run the application locally, follow these steps:
 ### 1. Main Interface
 Upon launching, the sidebar displays loaded resources and categorical feature details, while the main section provides a form to input health metrics.
 
-![Main Interface](images/Screenshot-1.png)
+![Main Interface](images/Screenshot_01.png)
 
 ### 2. User Input Preview
 After entering data, a preview of your input is shown to confirm the details before making a prediction.
