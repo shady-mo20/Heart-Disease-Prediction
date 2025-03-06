@@ -1,97 +1,125 @@
-# **Heart Disease Prediction**
+# Heart Disease Prediction
 
-This project aims to develop a predictive model to assess the likelihood of heart disease in patients using **Artificial Neural Networks (ANN)**. The dataset contains medical records with key health indicators. The project includes **Exploratory Data Analysis (EDA)**, data visualization, and model training to make accurate predictions.
+## Overview
+This project aims to predict the likelihood of heart disease based on various health indicators. Using machine learning models, including Logistic Regression, Random Forest, XGBoost, Support Vector Machine (SVM), and Artificial Neural Networks (ANN), we analyze patient data to provide insights into heart disease risks.
 
----
+## Dataset
+The dataset contains multiple health-related features such as BMI, smoking status, alcohol consumption, stroke history, and physical activity levels.
 
-## **Project Structure**
+### Sample Data (First 10 Rows)
+```python
+import pandas as pd
 
-- `data/`: Contains the dataset used for training and testing.
-- `src/`: Includes scripts for **EDA**, preprocessing, and model training.
-- `models/`: Stores trained models.
-- `main.py`: The main script to execute the project.
-- `requirements.txt`: Lists the dependencies required to run the project.
+# Load Data
+file_path = "Heart Disease.xlsx"
+data = pd.read_excel(file_path)
 
----
-
-## **Dataset Overview**
-
-The dataset contains medical records of patients, with features that can be used to predict heart disease.
-
-### **Sample Data (First 10 Rows)**
-
-| Age | Sex | BP  | Cholesterol | Blood Sugar | ECG | Max HR | Angina | ST Depression | Vessels | Thal | Target |
-|----|----|----|------------|------------|----|------|------|------------|--------|----|--------|
-| 63 | 1  | 145 | 233        | 1          | 2  | 150  | 0    | 2.3        | 0      | 6  | 1      |
-| 37 | 1  | 130 | 250        | 0          | 0  | 187  | 0    | 3.5        | 0      | 3  | 0      |
-| 41 | 0  | 130 | 204        | 0          | 2  | 172  | 0    | 1.4        | 0      | 3  | 0      |
-| 56 | 1  | 120 | 236        | 0          | 0  | 178  | 0    | 0.8        | 0      | 3  | 0      |
-| 57 | 0  | 120 | 354        | 0          | 0  | 163  | 1    | 0.6        | 0      | 3  | 1      |
-| 57 | 1  | 140 | 192        | 0          | 0  | 148  | 0    | 0.4        | 0      | 1  | 0      |
-| 56 | 0  | 140 | 294        | 0          | 2  | 153  | 0    | 1.3        | 0      | 2  | 0      |
-| 44 | 1  | 120 | 263        | 0          | 0  | 173  | 0    | 0.0        | 0      | 7  | 0      |
-| 52 | 1  | 172 | 199        | 1          | 0  | 162  | 0    | 0.5        | 0      | 7  | 0      |
-| 57 | 1  | 150 | 168        | 0          | 0  | 174  | 0    | 1.6        | 0      | 3  | 0      |
-
-### **Feature Explanation:**
-- **Age**: Patient's age.
-- **Sex**: 1 = Male, 0 = Female.
-- **BP (Blood Pressure)**: Systolic blood pressure (mmHg).
-- **Cholesterol**: Cholesterol level (mg/dL).
-- **Blood Sugar**: 1 = Fasting blood sugar > 120 mg/dL, 0 = Otherwise.
-- **ECG**: Electrocardiogram results.
-- **Max HR**: Maximum heart rate achieved.
-- **Angina**: 1 = Exercise-induced angina, 0 = No angina.
-- **ST Depression**: Depression of ST segment during exercise.
-- **Vessels**: Number of major vessels colored by fluoroscopy (0-3).
-- **Thal**: Thallium stress test results.
-- **Target**: 1 = Presence of heart disease, 0 = Absence.
-
----
-
-## **Exploratory Data Analysis (EDA)**
-
-- Performed statistical analysis to understand the data distribution.
-- Visualized correlations between different features using heatmaps.
-- Identified potential patterns in heart disease occurrence.
-
-📄 **EDA Report:** [Heart Disease EDA Report](https://github.com/shady-mo20/Heart-Disease-Prediction/blob/main/Heart%20disease%20prediction%20EDA%20Report.docx)
-
-📄 **Patient Symptoms Table:** [Patient Symptoms Table](https://github.com/shady-mo20/Heart-Disease-Prediction/blob/main/Patient_Symptoms_Table.docx)
-
----
-
-## **Model Training**
-
-- Used **Artificial Neural Networks (ANN)** with multiple hidden layers.
-- Optimized using **Adam optimizer**.
-- Applied **ReLU activation** in hidden layers and **Sigmoid activation** in the output layer.
-- Evaluated the model using accuracy, precision, recall, and F1-score.
-
----
-
-## **How to Run the Project**
-
-### **1. Clone the Repository**
-```bash
-git clone https://github.com/shady-mo20/Heart-Disease-Prediction.git
-cd Heart-Disease-Prediction
+# Display First 10 Rows
+data.head(10)
 ```
+The dataset contains categorical and numerical features, including:
+- **BMI**: Body Mass Index
+- **Smoking**: Whether the person smokes or not
+- **AlcoholDrinking**: Alcohol consumption status
+- **Stroke**: History of stroke
+- **PhysicalActivity**: Engagement in physical activity
+- **AgeCategory**: Age group classification
+- **Diabetic**: Diabetes status
+- **HeartDisease**: Target variable (Yes/No)
 
-### **2. Set Up Virtual Environment (Recommended)**
-```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-```
+## Exploratory Data Analysis (EDA)
+The EDA process included:
+1. **Data Distribution Analysis**: Examined the spread of features using histograms and box plots.
+2. **Correlation Analysis**: Identified key relationships between features using heatmaps.
+3. **Categorical Feature Analysis**: Compared categorical variables with heart disease incidence.
+4. **Outlier Detection and Removal**: Used IQR to filter extreme values.
 
-### **3. Install Dependencies**
-```bash
-pip install -r requirements.txt
-```
+### Sample Graphs
+#### Alcohol Consumption vs Heart Disease
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-### **4. Run the Application**
-```bash
-python main.py
+plt.figure(figsize=(10,5))
+sns.countplot(x=data["AlcoholDrinking"], hue=data["HeartDisease"])
+plt.title("Alcohol Drinking vs Heart Disease")
+plt.xlabel("Alcohol Drinking")
+plt.ylabel("Count")
+plt.legend(title="Heart Disease")
+plt.show()
 ```
+This graph shows the relationship between alcohol consumption and heart disease, indicating a potential correlation.
+
+More detailed EDA analysis can be found in the full **EDA Report**: [EDA Report](https://github.com/shady-mo20/Heart-Disease-Prediction/blob/main/Heart%20disease%20prediction%20EDA%20Report.docx)
+
+## Feature Engineering & Selection
+- **Categorical Encoding**: Used `LabelEncoder` to transform categorical values.
+- **Balancing Data**: Applied `NearMiss` technique to address class imbalance.
+- **Feature Importance Analysis**: Selected the most relevant features for model training.
+
+## Machine Learning Models
+### 1. Traditional Models
+We trained the following models:
+- Logistic Regression
+- Random Forest Classifier
+- XGBoost Classifier
+- Support Vector Machine (SVM)
+
+Each model was evaluated using classification reports and accuracy metrics.
+
+### 2. Artificial Neural Network (ANN)
+An ANN was implemented using TensorFlow/Keras with the following architecture:
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+model = Sequential([
+    Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
+    Dropout(0.3),
+    Dense(64, activation='relu'),
+    Dropout(0.3),
+    Dense(32, activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+```
+The model was compiled with the Adam optimizer and trained for 50 epochs.
+
+## Patient Symptom Analysis
+A detailed **Patient Symptoms Table** is available: [Patient Symptoms Table](https://github.com/shady-mo20/Heart-Disease-Prediction/blob/main/Patient_Symptoms_Table.docx)
+
+## Predictions
+A function was implemented to predict heart disease for a new patient based on input features. Example:
+```python
+patient_data = {
+    "BMI": 28,
+    "Smoking": 1,
+    "AlcoholDrinking": 0,
+    "Stroke": 0,
+    "PhysicalHealth": 5,
+    "MentalHealth": 3,
+    "DiffWalking": 0,
+    "Sex": 1,
+    "AgeCategory": 5,
+    "Race": 2,
+    "Diabetic": 0,
+    "PhysicalActivity": 1,
+    "GenHealth": 2,
+    "SleepTime": 6,
+    "Asthma": 0,
+    "KidneyDisease": 0,
+    "SkinCancer": 0
+}
+```
+The model returns a **Heart Disease** or **No Heart Disease** prediction.
+
+## Conclusion
+This project successfully predicts heart disease using various machine learning models. Further improvements can be made by:
+- Expanding the dataset for better generalization.
+- Hyperparameter tuning for increased accuracy.
+- Deploying the model as an API for real-world applications.
 
 ---
+### Contributors
+- **Shady Mohamed** (GitHub: [shady-mo20](https://github.com/shady-mo20))
+
+For more details, refer to the project repository: [Heart Disease Prediction](https://github.com/shady-mo20/Heart-Disease-Prediction).
